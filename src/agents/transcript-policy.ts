@@ -1,5 +1,5 @@
 import { normalizeProviderId } from "./model-selection.js";
-import { isGoogleModelApi } from "./pi-embedded-helpers/google.js";
+import { isAntigravityClaude, isGoogleModelApi } from "./pi-embedded-helpers/google.js";
 import type { ToolCallIdMode } from "./tool-call-id.js";
 
 export type TranscriptSanitizeMode = "full" | "images-only";
@@ -15,6 +15,7 @@ export type TranscriptPolicy = {
     includeCamelCase?: boolean;
   };
   sanitizeThinkingSignatures: boolean;
+  normalizeAntigravityThinkingBlocks: boolean;
   dropThinkingBlocks: boolean;
   applyGoogleTurnOrdering: boolean;
   validateGeminiTurns: boolean;
@@ -94,6 +95,11 @@ export function resolveTranscriptPolicy(params: {
     (provider === "openrouter" || provider === "opencode" || provider === "kilocode") &&
     modelId.toLowerCase().includes("gemini");
   const isCopilotClaude = provider === "github-copilot" && modelId.toLowerCase().includes("claude");
+  const isAntigravityClaudeModel = isAntigravityClaude({
+    api: params.modelApi,
+    provider,
+    modelId,
+  });
 
   // GitHub Copilot's Claude endpoints can reject persisted `thinking` blocks with
   // non-binary/non-base64 signatures (e.g. thinkingSignature: "reasoning_text").
@@ -123,6 +129,7 @@ export function resolveTranscriptPolicy(params: {
     preserveSignatures: false,
     sanitizeThoughtSignatures: isOpenAi ? undefined : sanitizeThoughtSignatures,
     sanitizeThinkingSignatures: false,
+    normalizeAntigravityThinkingBlocks: isAntigravityClaudeModel,
     dropThinkingBlocks,
     applyGoogleTurnOrdering: !isOpenAi && isGoogle,
     validateGeminiTurns: !isOpenAi && isGoogle,

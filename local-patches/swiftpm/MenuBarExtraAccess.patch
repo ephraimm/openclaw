@@ -1,0 +1,14 @@
+diff --git a/Sources/MenuBarExtraAccess/NSEvent Extensions.swift b/Sources/MenuBarExtraAccess/NSEvent Extensions.swift
+index 97297a4..1ee23ad 100644
+--- a/Sources/MenuBarExtraAccess/NSEvent Extensions.swift	
++++ b/Sources/MenuBarExtraAccess/NSEvent Extensions.swift	
+@@ -47,9 +47,6 @@ extension NSEvent.EventType {
+         case .directTouch: return "directTouch"
+         case .changeMode: return "changeMode"
+             
+-        #if compiler(>=6.2) // handle cases only known to the SDKs that ship with Xcode 26
+-        case .mouseCancelled: return "mouseCancelled"
+-        #endif
+             
+         @unknown default:
+             assertionFailure("Unhandled `NSEvent.EventType` case with raw value: \(rawValue)")
